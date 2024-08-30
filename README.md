@@ -1,3 +1,6 @@
+PHP: 8.2
+Laravel: 10.
+
 // tạo mới table cho DB
 - php artisan migrate
 
