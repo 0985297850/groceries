@@ -13,6 +13,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $models = [
             'User',
+            'Banner'
         ];
 
         foreach ($models as $model) {
