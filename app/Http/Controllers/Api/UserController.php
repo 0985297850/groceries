@@ -21,6 +21,11 @@ class UserController extends Controller
     {
         try {
             $id_user = Auth()->id();
+
+            if (!$id_user) {
+                return $this->responseFail([], "FAILED", null, 404);
+            }
+
             $params =  $request->validated();
             $file = $request->file('avatar');
             $user = $this->user_service->find($id_user);
