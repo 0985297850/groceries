@@ -49,7 +49,7 @@ class AuthController extends Controller
                 'password' => 'required|string|min:6',
                 'phone' => 'required|numeric|digits:10',
                 'address' => 'required|string|min:5|max:50',
-                'gender' => 'required|string|min:2|max:3',
+                'gender' => 'required|string|min:2|max:5',
             ]);
 
             if ($validator->fails()) {
