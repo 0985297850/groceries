@@ -14,4 +14,9 @@ class UserService
     {
         return $this->userRepository->getUserLogin($id);
     }
+
+    public function find($id)
+    {
+        return $this->userRepository->find($id);
+    }
 }

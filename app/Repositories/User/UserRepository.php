@@ -20,6 +20,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function getUserLogin($id)
     {
-        return $this->model->find($id);
+        return $this->model->with('profile')->find($id);
     }
 }
