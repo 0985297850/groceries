@@ -11,7 +11,7 @@ trait ResponseFormat
     {
         return response()->json([
             'status'     => 'success',
-            'message_key'     => $message,
+            'message'     => $message,
             'data'         => $data,
             'code'      => $code
         ], $code);
@@ -22,7 +22,7 @@ trait ResponseFormat
         Log::debug('responseFail: ' . json_encode($data));
         return response()->json([
             'status'     => 'fail',
-            'message_key'     => $message,
+            'message'     => $message,
             'errors'    => $errors,
             'data'         => $data,
             'code'      => $code
