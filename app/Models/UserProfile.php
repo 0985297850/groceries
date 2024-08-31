@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Posts extends Model
+class UserProfile extends Model
 {
     use HasFactory;
 
-    protected $table = "posts";
-
-    protected $guard = [];
-
+    protected $table = 'user_profile';
+    protected $guarded = [];
 }
