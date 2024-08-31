@@ -7,6 +7,8 @@ Laravel: 10.
 // build vendor
 - composer i
 
+- php artisan db:seed tạo user admin (admin@gmail.com, Admin@123456)
+
 // public port cho người cùng mạng
 - php artisan serve --host=192.168.1.139 --port=8000
 
