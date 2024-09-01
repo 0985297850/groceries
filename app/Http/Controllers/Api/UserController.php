@@ -20,18 +20,17 @@ class UserController extends Controller
         return $this->responseSuccess($user, "SUCCESS");
     }
 
-    public function update(Update $request)
+    public function update(Update $request, $id)
     {
         try {
-            $id_user = Auth()->id();
-
-            if (!$id_user) {
+            if (!$id) {
                 return $this->responseFail([], "FAILED", null, 404);
             }
 
             $params =  $request->validated();
+
             $file = $request->file('avatar');
-            $user = $this->user_service->find($id_user);
+            $user = $this->user_service->find($id);
 
             if ($file) {
                 if ($user->profile?->avatar) {
@@ -74,31 +73,35 @@ class UserController extends Controller
 
     public function create(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|between:3,100',
-            'last_name' => 'required|string|between:3,100',
-            'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:6',
-            'phone' => 'required|numeric|digits:10',
-            'address' => 'required|string|min:5|max:50',
-            'gender' => 'required|string|min:2|max:5',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'first_name' => 'required|string|between:3,100',
+                'last_name' => 'required|string|between:3,100',
+                'email' => 'required|string|email|max:100|unique:users',
+                'password' => 'required|string|min:6',
+                'phone' => 'required|numeric|digits:10',
+                'address' => 'required|string|min:5|max:50',
+                'gender' => 'required|string|min:2|max:5',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+            if ($validator->fails()) {
+                return response()->json($validator->errors()->toJson(), 400);
+            }
+
+            $param_users = array_merge(
+                $request->only(["email"]),
+                ['password' => bcrypt($request->password)]
+            );
+
+            $user = $this->user_service->createUser($param_users);
+            $user->profile()->create($request->only(['first_name', 'last_name', 'phone', 'address', 'gender']));
+
+            $userWithProfile = User::with('profile')->find($user->id);
+
+            return $this->responseSuccess($userWithProfile, 'User created successfully');
+        } catch (\Exception $e) {
+            return $this->responseFail([], $e->getMessage());
         }
-
-        $param_users = array_merge(
-            $request->only(["email"]),
-            ['password' => bcrypt($request->password)]
-        );
-
-        $user = $this->user_service->createUser($param_users);
-        $user->profile()->create($request->only(['first_name', 'last_name', 'phone', 'address', 'gender']));
-
-        $userWithProfile = User::with('profile')->find($user->id);
-
-        return $this->responseSuccess($userWithProfile, 'User created successfully');
     }
 
     public function delete($id)
@@ -110,5 +113,14 @@ class UserController extends Controller
         }
 
         return $this->responseFail([], "DELETED FAILED");
+    }
+
+    public function edit($id)
+    {
+        $user = $this->user_service->find($id);
+        if ($user)
+            return $this->responseSuccess($user);
+
+        return $this->responseFail([]);
     }
 }
