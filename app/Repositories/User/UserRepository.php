@@ -13,13 +13,21 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         $this->model = $model;
     }
 
-    public function getAllUser()
-    {
-        return $this->model->getAll();
-    }
-
     public function getUserLogin($id)
     {
         return $this->model->with('profile')->find($id);
+    }
+
+    public function getAllUser($params)
+    {
+        $per_page = $params->per_page ?? 10;
+
+        $users = $this->model;
+
+        if (isset($params->keyword)) {
+            $users = $users->where('name', 'like', '%' . $params->keyword . '%');
+        }
+
+        return $users->paginate($per_page);
     }
 }
