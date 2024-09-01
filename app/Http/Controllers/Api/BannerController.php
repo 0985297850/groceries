@@ -97,4 +97,13 @@ class BannerController extends Controller
 
         return $this->responseFail([], "DELETED FAILED");
     }
+
+    public function edit($id)
+    {
+        $banner = $this->banner_service->find($id);
+        if ($banner)
+            return $this->responseSuccess($banner);
+
+        return $this->responseFail([]);
+    }
 }
