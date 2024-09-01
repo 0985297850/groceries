@@ -25,8 +25,13 @@ Route::group(['middleware' => 'api', 'prefix' => '/v1/auth'], function () {
 Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
     Route::controller(UserController::class)->group(function () {
         Route::prefix('user')->group(function () {
-            Route::get('/profile', 'index');
+            Route::get('profile', 'profile');
             Route::post('update', 'update');
+            Route::group(['middleware' => 'admin'], function () {
+                Route::get('index', 'index');
+                Route::post('create', 'create');
+                Route::get('delete', 'delete');
+            });
         });
     });
 });
@@ -35,9 +40,11 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
     Route::controller(BannerController::class)->group(function () {
         Route::prefix('banner')->group(function () {
             Route::get('index', 'index');
-            Route::post('create', 'create');
-            Route::get('update/{id}', 'update');
-            Route::get('delete/{id}', 'delete');
+            Route::group(['middleware' => 'admin'], function () {
+                Route::post('create', 'create');
+                Route::get('update/{id}', 'update');
+                Route::get('delete/{id}', 'delete');
+            });
         });
     });
 });
