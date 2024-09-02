@@ -20,20 +20,8 @@ class UserFactory extends Factory
             'email' => 'admin@gmail.com',
             'password' => bcrypt('Admin@123456'), // Mật khẩu mặc định
             'role' => 'admin',
+            'phone' => '0985297855',
+            'user_name' => "Admin",
         ];
-    }
-
-    public function configure()
-    {
-        return $this->afterCreating(function (User $user) {
-            // Tạo user profile sau khi tạo user
-            $user->profile()->create([
-                'address' => 'Ha Noi',
-                'first_name' => "Admin",
-                'last_name' => "System",
-                'gender' => "other",
-                'phone' => '0985297855'
-            ]);
-        });
     }
 }
