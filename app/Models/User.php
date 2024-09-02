@@ -23,7 +23,6 @@ class User extends Authenticatable implements JWTSubject
     protected $table = 'users';
     protected $date = ['deleted_at'];
     protected $guarded = [];
-    protected $with = ['profile'];
 
     /**
      * The attributes that should be hidden for serialization.
