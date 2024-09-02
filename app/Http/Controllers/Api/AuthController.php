@@ -43,13 +43,10 @@ class AuthController extends Controller
         try {
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
-                'first_name' => 'required|string|between:3,100',
-                'last_name' => 'required|string|between:3,100',
+                'user_name' => 'required|string|between:2,100',
                 'email' => 'required|string|email|max:100|unique:users',
                 'password' => 'required|string|min:6',
                 'phone' => 'required|numeric|digits:10',
-                'address' => 'required|string|min:5|max:50',
-                'gender' => 'required|string|min:2|max:5',
             ]);
 
             if ($validator->fails()) {
@@ -61,14 +58,11 @@ class AuthController extends Controller
                 ['password' => bcrypt($request->password)]
             ));
 
-            $user->profile()->create($request->only(['first_name', 'last_name', 'phone', 'address', 'gender']));
             DB::commit();
-
-            $userWithProfile = User::with('profile')->find($user->id);
 
             return response()->json([
                 'message' => 'User successfully registered',
-                'user' => $userWithProfile
+                'user' => $user
             ], 201);
         } catch (\Exception $e) {
             // Rollback transaction nếu có lỗi

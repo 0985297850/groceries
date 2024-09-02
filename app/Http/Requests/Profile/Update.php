@@ -26,12 +26,8 @@ class Update extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'nullable|string|between:3,100',
-            'last_name' => 'nullable|string|between:3,100',
+            'user_name' => 'nullable|string|between:2,100',
             'phone' => 'nullable|numeric|digits:10',
-            'address' => 'nullable|string|min:5|max:50',
-            'gender' => 'nullable|string|min:2|max:3',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 
@@ -39,22 +35,10 @@ class Update extends FormRequest
     public function messages()
     {
         return [
-            'first_name.string' => 'First name must be a string.',
-            'first_name.between' => 'First name must be between 3 and 100 characters.',
-            'last_name.string' => 'Last name must be a string.',
-            'last_name.between' => 'Last name must be between 3 and 100 characters.',
+            'user_name.string' => 'Name must be a string.',
+            'user_name.between' => 'Name must be between 3 and 100 characters.',
             'phone.numeric' => 'Phone number must be numeric.',
             'phone.digits' => 'Phone number must be exactly 10 digits.',
-            'address.string' => 'Address must be a string.',
-            'address.min' => 'Address must be at least 5 characters.',
-            'address.max' => 'Address may not be greater than 50 characters.',
-            'gender.string' => 'Gender must be a string.',
-            'gender.min' => 'Gender must be at least 2 characters.',
-            'gender.max' => 'Gender may not be greater than 3 characters.',
-            'avatar.required' => 'The avatar field is required.',
-            'avatar.image' => 'The file must be an avatar.',
-            'avatar.mimes' => 'The avatar must be a file of type: jpeg, png, jpg',
-            'avatar.max' => 'The image may not be greater than 2048 kilobytes.',
         ];
     }
 
