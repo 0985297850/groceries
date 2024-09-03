@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Carbon\Exceptions\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -46,7 +45,7 @@ class AuthController extends Controller
                 'user_name' => 'required|string|between:2,100',
                 'email' => 'required|string|email|max:100|unique:users',
                 'password' => 'required|string|min:6',
-                'phone' => 'required|numeric|digits:10',
+                'phone' => 'required|numeric|between:10,11',
             ]);
 
             if ($validator->fails()) {
