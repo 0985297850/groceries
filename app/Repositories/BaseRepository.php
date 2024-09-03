@@ -47,7 +47,5 @@ class BaseRepository implements RepositoryInterface
         return false;
     }
 
-    public function a()
-    {
-    }
+    public function a() {}
 }
