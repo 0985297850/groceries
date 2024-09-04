@@ -59,7 +59,7 @@ class UserController extends Controller
                 'user_name' => 'required|string|between:2,100',
                 'email' => 'required|string|email|max:100|unique:users',
                 'password' => 'required|string|min:6',
-                'phone' => 'required|numeric|between:10,11',
+                'phone' => 'required|regex:/^0[0-9]{9,10}$/',
             ]);
 
             if ($validator->fails()) {
