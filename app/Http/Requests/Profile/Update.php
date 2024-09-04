@@ -26,8 +26,8 @@ class Update extends FormRequest
     public function rules(): array
     {
         return [
-            'user_name' => 'nullable|string|between:2,100',
-            'phone' => 'nullable|numeric|between:10,11',
+            'user_name' => 'required|string|between:2,100',
+            'phone' => 'required|regex:/^0[0-9]{9,10}$/',
         ];
     }
 
@@ -36,9 +36,10 @@ class Update extends FormRequest
     {
         return [
             'user_name.string' => 'Name must be a string.',
+            'user_name.required' => 'The name is required.',
             'user_name.between' => 'Name must be between 3 and 100 characters.',
-            'phone.numeric' => 'Phone number must be numeric.',
-            'phone.between' => 'Phone  must be between 10 and 11 characters.',
+            'phone.regex' => 'The phone field format is invalid.',
+            'phone.required' => 'The phone number is required.',
         ];
     }
 
