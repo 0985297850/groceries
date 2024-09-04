@@ -53,7 +53,7 @@ class AuthController extends Controller
             }
 
             $user = User::create(array_merge(
-                $request->only(["email"]),
+                $request->only(['email', 'phone', 'user_name']),
                 ['password' => bcrypt($request->password)]
             ));
 
