@@ -36,7 +36,6 @@ class ProductController extends Controller
                 $dateFolder = now()->format('Y-m-d');
                 $path = "uploads/{$name_file}/{$dateFolder}/";
                 if (!file_exists(public_path($path))) {
-                    // Tạo thư mục với quyền ghi đầy đủ (0777)
                     mkdir(public_path($path), 0777, true);
                 }
 
@@ -52,7 +51,7 @@ class ProductController extends Controller
             return $this->responseFail([], "Created failed!");
         } catch (\Exception $e) {
             DB::rollBack();
-            return $this->responseFail([], $e->getMessage());
+            return $this->responseFail([], $e->getMessage(), null, $e->getCode());
         }
     }
 
