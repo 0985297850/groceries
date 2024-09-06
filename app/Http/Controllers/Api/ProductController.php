@@ -33,7 +33,7 @@ class ProductController extends Controller
             $file = $request->file('image');
 
             if ($request->hasFile('image')) {
-                $token = env('KEY_CREATE_FILE_GITHUB');
+                $token = "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";
                 $owner = '0985297850'; // Tên người dùng hoặc tổ chức của bạn
                 $repo = 'groceries'; // Tên repository của bạn
                 $branch = 'main'; // Thay đổi nếu bạn sử dụng branch khác
@@ -45,18 +45,6 @@ class ProductController extends Controller
 
                 $imageContent = file_get_contents($file->getPathname());
                 $encodedImage = base64_encode($imageContent);
-                $response = Http::withToken($token)->put("https://api.github.com/repos/$owner/$repo/contents/$path/.empty", [
-                    'message' => 'Create folder',
-                    'content' => base64_encode(''), // Nội dung file trống
-                    'branch' => $branch,
-                ]);
-
-                if ($response->failed() && $response->status() == 404) {
-                    return response()->json([
-                        'error' => 'Failed to create folder',
-                        'details' => $response->json()
-                    ], $response->status());
-                }
 
                 $response = Http::withToken($token)->put("https://api.github.com/repos/$owner/$repo/contents/$filePath", [
                     'message' => 'Upload image',
@@ -64,7 +52,13 @@ class ProductController extends Controller
                     'branch' => $branch,
                 ]);
 
-                return response()->json($response->json());
+                // Kiểm tra phản hồi lỗi
+                if ($response->failed()) {
+                    return response()->json([
+                        'error' => 'Failed to upload image',
+                        'details' => $response->json()
+                    ], $response->status());
+                }
 
                 $params['image'] = $filePath;
 
