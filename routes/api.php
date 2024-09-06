@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +57,22 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
     Route::controller(CategoryController::class)->group(function () {
         Route::prefix('category')->group(function () {
             Route::get('get-all', 'getAll');
+            Route::group(['middleware' => 'admin'], function () {
+                Route::get('index', 'index');
+                Route::post('create', 'create');
+                Route::post('update/{id}', 'update');
+                Route::get('delete/{id}', 'delete');
+                Route::get('edit/{id}', 'edit');
+            });
+        });
+    });
+});
+
+Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
+    Route::controller(ProductController::class)->group(function () {
+        Route::prefix('product')->group(function () {
+            Route::get('product-by-category/{id}', 'productByCategory');
+
             Route::group(['middleware' => 'admin'], function () {
                 Route::get('index', 'index');
                 Route::post('create', 'create');
