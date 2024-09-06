@@ -8,6 +8,7 @@ use App\Services\CategoryService;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
@@ -32,17 +33,48 @@ class ProductController extends Controller
             $file = $request->file('image');
 
             if ($request->hasFile('image')) {
+                $token = env('KEY_CREATE_FILE_GITHUB');
+                $repo = '0985297850/groceries';
+                $branch = 'main';
                 $name_file = "product";
                 $dateFolder = now()->format('Y-m-d');
-                $path = "uploads/{$name_file}/{$dateFolder}/";
-                if (!file_exists(public_path($path))) {
-                    // Tạo thư mục với quyền ghi đầy đủ (0777)
-                    mkdir(public_path($path), 0777, true);
+                $path = "public/{$name_file}/{$dateFolder}/";
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $filePath = $path . $filename;
+
+                $imageContent = file_get_contents($file->getPathname());
+                $encodedImage = base64_encode($imageContent);
+                $response = Http::withToken($token)->put("https://api.github.com/repos/$repo/contents/$path/.empty", [
+                    'message' => 'Create folder',
+                    'content' => base64_encode(''), // Nội dung file trống
+                    'branch' => $branch,
+                ]);
+
+                if ($response->status() == 422) {
+                    $response = Http::withToken($token)->put("https://api.github.com/repos/$repo/contents/$path/.empty", [
+                        'message' => 'Create folder',
+                        'content' => base64_encode(''), // Nội dung file trống
+                        'branch' => $branch,
+                    ]);
                 }
 
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path($path), $filename);
-                $params["image"] = $path . $filename;
+                if ($response->successful()) {
+                    $response = Http::withToken($token)->put("https://api.github.com/repos/$repo/contents/$filePath", [
+                        'message' => 'Upload image',
+                        'content' => $encodedImage,
+                        'branch' => $branch,
+                    ]);
+
+                    return response()->json($response->json());
+                } else {
+                    return response()->json([
+                        'error' => 'Failed to create folder',
+                        'details' => $response->json()
+                    ], $response->status());
+                }
+
+                $params['image'] = $filePath;
+
                 $product = $this->product_service->createProduct($params);
 
                 DB::commit();
