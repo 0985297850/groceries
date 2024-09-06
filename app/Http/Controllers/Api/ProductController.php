@@ -51,7 +51,7 @@ class ProductController extends Controller
             return $this->responseFail([], "Created failed!");
         } catch (\Exception $e) {
             DB::rollBack();
-            return $this->responseFail([], $e->getMessage(), null, $e->getCode());
+            return $this->responseFail([], $e->getMessage());
         }
     }
 
