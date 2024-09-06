@@ -34,8 +34,9 @@ class ProductController extends Controller
 
             if ($request->hasFile('image')) {
                 $token = env('KEY_CREATE_FILE_GITHUB');
-                $repo = '0985297850/groceries';
-                $branch = 'main';
+                $owner = '0985297850'; // Tên người dùng hoặc tổ chức của bạn
+                $repo = 'groceries'; // Tên repository của bạn
+                $branch = 'main'; // Thay đổi nếu bạn sử dụng branch khác
                 $name_file = "product";
                 $dateFolder = now()->format('Y-m-d');
                 $path = "public/{$name_file}/{$dateFolder}/";
@@ -44,34 +45,26 @@ class ProductController extends Controller
 
                 $imageContent = file_get_contents($file->getPathname());
                 $encodedImage = base64_encode($imageContent);
-                $response = Http::withToken($token)->put("https://api.github.com/repos/$repo/contents/$path/.empty", [
+                $response = Http::withToken($token)->put("https://api.github.com/repos/$owner/$repo/contents/$path/.empty", [
                     'message' => 'Create folder',
                     'content' => base64_encode(''), // Nội dung file trống
                     'branch' => $branch,
                 ]);
 
-                if ($response->status() == 422) {
-                    $response = Http::withToken($token)->put("https://api.github.com/repos/$repo/contents/$path/.empty", [
-                        'message' => 'Create folder',
-                        'content' => base64_encode(''), // Nội dung file trống
-                        'branch' => $branch,
-                    ]);
-                }
-
-                if ($response->successful()) {
-                    $response = Http::withToken($token)->put("https://api.github.com/repos/$repo/contents/$filePath", [
-                        'message' => 'Upload image',
-                        'content' => $encodedImage,
-                        'branch' => $branch,
-                    ]);
-
-                    return response()->json($response->json());
-                } else {
+                if ($response->failed() && $response->status() == 404) {
                     return response()->json([
                         'error' => 'Failed to create folder',
                         'details' => $response->json()
                     ], $response->status());
                 }
+
+                $response = Http::withToken($token)->put("https://api.github.com/repos/$owner/$repo/contents/$filePath", [
+                    'message' => 'Upload image',
+                    'content' => $encodedImage,
+                    'branch' => $branch,
+                ]);
+
+                return response()->json($response->json());
 
                 $params['image'] = $filePath;
 
