@@ -22,7 +22,6 @@ class BannerController extends Controller
 
     public function create(Create $request)
     {
-
         try {
             $banners = $this->banner_service->getAll();
 
@@ -32,7 +31,6 @@ class BannerController extends Controller
 
             $params =  $request->validated();
             $file = $request->file('url');
-
             if ($request->hasFile('url')) {
                 $folder = "banner/";
                 $upload = $this->uploadfile_service->upload($file, $folder);
