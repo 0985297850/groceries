@@ -24,4 +24,17 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
         return $result->paginate($per_page);
     }
+
+    public function getProduct($params)
+    {
+        $result = $this->model;
+
+        $per_page = $params->per_page ?? 10;
+
+        if (isset($params->keyword)) {
+            $result = $result->where('name', 'like', '%' . $params->keyword . '%');
+        }
+
+        return $result->paginate($per_page);
+    }
 }

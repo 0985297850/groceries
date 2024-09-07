@@ -6,10 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Banner\Create;
 use App\Http\Requests\Banner\Update;
 use App\Services\BannerService;
+use App\Services\UploadFileService;
 
 class BannerController extends Controller
 {
-    public function __construct(protected BannerService $banner_service) {}
+    public function __construct(
+        protected BannerService $banner_service,
+        protected UploadFileService $uploadfile_service
+    ) {}
 
     public function index()
     {
@@ -30,22 +34,17 @@ class BannerController extends Controller
             $file = $request->file('url');
 
             if ($request->hasFile('url')) {
-                $name_file = "banner";
-                $dateFolder = now()->format('Y-m-d');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $path = "uploads/{$name_file}/{$dateFolder}/";
-                $file->move(public_path($path), $filename);
-                $params["url"] = $path . $filename;
-
+                $folder = "banner/";
+                $upload = $this->uploadfile_service->upload($file, $folder);
+                $params['url'] = $upload['url'];
                 $banner = $this->banner_service->createBanner($params);
 
-                if ($banner) {
-                    return $this->responseSuccess($banner);
-                }
+                return $this->responseSuccess($banner, "Created banner successfully!");
             }
 
             return $this->responseFail();
         } catch (\Exception $e) {
+            $this->uploadfile_service->destroy($upload['url'], $upload['file']);
             return $this->responseFail([], $e->getMessage());
         }
     }
@@ -54,42 +53,39 @@ class BannerController extends Controller
     {
         try {
             $banner = $this->banner_service->find($id);
-            $params =  $request->validated();
-            $file = $request->file('url');
-
-            if (!$request->hasFile('url')) {
-                return $this->responseSuccess($banner, "UPDATED SUCCESSFULLY");
+            if (!isset($banner)) {
+                return $this->responseFail([], "Banner does not exist.");
             }
 
+            $params =  $request->validated();
+
+            $file = $request->file('url');
             if ($request->hasFile('url')) {
                 if ($banner->url) {
-                    $oldFilePath = $banner->url;
-                    if ($oldFilePath && file_exists(public_path($oldFilePath))) {
-                        unlink(public_path($oldFilePath));
-                    }
-
-                    $name_file = "banner";
-                    $dateFolder = now()->format('Y-m-d');
-                    $filename = time() . '_' . $file->getClientOriginalName();
-                    $path = "uploads/{$name_file}/{$dateFolder}/";
-                    $file->move(public_path($path), $filename);
-                    $params["url"] = $path . $filename;
-
-                    $banner = $this->banner_service->updateBanner($id, $params);
-
-                    return $this->responseSuccess($banner, "UPDATED SUCCESSFULLY");
+                    $this->uploadfile_service->destroyImage($banner->url);
                 }
+
+                $folder = 'banner/';
+                $upload = $this->uploadfile_service->upload($file, $folder);
+                $params['url'] = $upload['url'];
+            } else {
+                // Nếu không có ảnh mới, giữ nguyên ảnh cũ
+                $params['url'] = $banner->url;
             }
 
+            $banner->update($params);
             return $this->responseSuccess($banner, "UPDATED SUCCESSFULLY");
         } catch (\Exception $e) {
+            $this->uploadfile_service->destroy($upload['url'], $upload['file']);
             return $this->responseFail([], $e->getMessage());
         }
     }
 
     public function delete($id)
     {
-        if ($id) {
+        $banner = $this->banner_service->find($id);
+        if (isset($banner)) {
+            $this->uploadfile_service->destroyImage($banner->url);
             $this->banner_service->deleteBanner($id);
 
             return $this->responseSuccess([], "DELETED SUCCESSFULLY");
