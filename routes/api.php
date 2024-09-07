@@ -72,13 +72,12 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
     Route::controller(ProductController::class)->group(function () {
         Route::prefix('product')->group(function () {
             Route::get('product-by-category/{id}', 'productByCategory');
-
+            Route::get('edit/{id}', 'edit');
             Route::group(['middleware' => 'admin'], function () {
                 Route::get('index', 'index');
                 Route::post('create', 'create');
                 Route::post('update/{id}', 'update');
                 Route::get('delete/{id}', 'delete');
-                Route::get('edit/{id}', 'edit');
             });
         });
     });
