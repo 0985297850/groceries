@@ -32,7 +32,7 @@ class Create extends FormRequest
             'description' => 'required|string',
             'price' => 'required|integer|min:0|max:1000000000',
             'quantity' => 'required|integer|min:0|max:100000',
-            'weight' => 'nullable|string|max:255',
+            'weight' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
@@ -59,6 +59,7 @@ class Create extends FormRequest
             'quantity.max' => 'The quantity may not exceed 100,000.',
             'weight.string' => 'The weight must be a string.',
             'weight.max' => 'The weight may not be greater than 255 characters.',
+            'weight.required' => 'The weight is required.',
             'image.image' => 'The image must be an image file.',
             'image.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
             'image.max' => 'The image may not be greater than 2MB.',
