@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\Create;
 use App\Http\Requests\Product\Update;
+use App\Models\Product;
 use App\Services\CategoryService;
 use App\Services\ProductService;
 use App\Services\UploadFileService;
@@ -31,7 +32,7 @@ class ProductController extends Controller
             'total_items' => $product_by_category->total(),
         ];
 
-        return $this->responseSuccess($response, "Successfully!");
+        return $this->responseSuccess($response, "Thành công!");
     }
 
     public function create(Create $request)
@@ -53,10 +54,10 @@ class ProductController extends Controller
                 $product = $this->product_service->createProduct($params);
 
                 DB::commit();
-                return $this->responseSuccess($product, "Created successfully!");
+                return $this->responseSuccess($product, "Tạo mới thành công!");
             }
 
-            return $this->responseFail([], "Created failed!");
+            return $this->responseFail([], "Tạo mới thất bại!");
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -67,7 +68,13 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        return $this->product_service->find($id);
+        $product = Product::findWithFavourite($id);
+
+        if (!$product) {
+            return $this->responseFail([], "Sản phẩm không tồn tại");
+        }
+
+        return $this->responseSuccess($product, "Lấy sản phẩm thành công!");
     }
 
     public function update(Update $request, $id)
@@ -78,7 +85,7 @@ class ProductController extends Controller
 
             $product = $this->product_service->find($id);
             if (!isset($product)) {
-                return $this->responseFail([], "Product does not exist.");
+                return $this->responseFail([], "Sản phẩm không tồn tại!");
             }
 
             $category = $this->category_service->find($params['category_id']);
@@ -104,7 +111,7 @@ class ProductController extends Controller
             $product->update($params);
 
             DB::commit();
-            return $this->responseSuccess($product, "Updated successfully!");
+            return $this->responseSuccess($product, "Cập nhật thành công!");
         } catch (\Exception $e) {
             // Rollback giao dịch nếu có lỗi
             DB::rollBack();
@@ -121,10 +128,10 @@ class ProductController extends Controller
             $this->uploadfile_service->destroyImage($product->image);
             $this->product_service->deleteProduct($id);
 
-            return $this->responseSuccess([], "Deleted Successfully");
+            return $this->responseSuccess([], "Xóa thành công!");
         }
 
-        return $this->responseFail([], "Deleted Failed");
+        return $this->responseFail([], "Xóa thất bại!");
     }
 
     public function productByCategory(Request $request, $id)
@@ -144,6 +151,6 @@ class ProductController extends Controller
             'total_items' => $product_by_category->total(),
         ];
 
-        return $this->responseSuccess($response, "Successfully!");
+        return $this->responseSuccess($response, "Thành công!");
     }
 }
