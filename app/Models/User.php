@@ -54,8 +54,8 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function profile()
+    public function favourites()
     {
-        return $this->hasOne(UserProfile::class);
+        return $this->belongsToMany(Product::class, 'product_favourites', 'user_id', 'product_id');
     }
 }

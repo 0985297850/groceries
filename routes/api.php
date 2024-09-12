@@ -35,6 +35,7 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
                 Route::get('delete/{id}', 'delete');
                 Route::get('edit/{id}', 'edit');
             });
+            Route::post('favourite/{id}', 'favourite');
         });
     });
 });
