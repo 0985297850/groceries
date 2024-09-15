@@ -17,7 +17,7 @@ class ProductController extends Controller
     public function __construct(
         protected CategoryService $category_service,
         protected ProductService $product_service,
-        protected UploadFileService $uploadfile_service
+        protected UploadFileService $uploadfile_service,
     ) {}
 
     public function index(Request $request)

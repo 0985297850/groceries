@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -82,6 +83,14 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
                 Route::post('update/{id}', 'update');
                 Route::get('delete/{id}', 'delete');
             });
+        });
+    });
+});
+
+Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
+    Route::controller(PaymentController::class)->group(function () {
+        Route::prefix('payment')->group(function () {
+            Route::post('create-payment', 'createPayment');
         });
     });
 });
