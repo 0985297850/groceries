@@ -74,6 +74,8 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
         Route::prefix('product')->group(function () {
             Route::get('product-by-category/{id}', 'productByCategory');
             Route::get('edit/{id}', 'edit');
+            Route::get('list-favorite', 'listFavorite');
+
             Route::group(['middleware' => 'admin'], function () {
                 Route::get('index', 'index');
                 Route::post('create', 'create');
