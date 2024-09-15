@@ -153,4 +153,20 @@ class ProductController extends Controller
 
         return $this->responseSuccess($response, "Thành công!");
     }
+
+    public function listFavorite(Request $request)
+    {
+        $params = $request->all();
+        $products = $this->product_service->getProductFavorite($params);
+
+        $response = [
+            'data' => $products->items(),
+            'current_page' => $products->currentPage(),
+            'total_pages' => $products->lastPage(),
+            'per_page' => $products->perPage(),
+            'total_items' => $products->total(),
+        ];
+
+        return $this->responseSuccess($response, "Successfully!");
+    }
 }

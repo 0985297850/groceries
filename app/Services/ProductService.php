@@ -34,4 +34,9 @@ class ProductService
     {
         return $this->product_repo->delete($id);
     }
+
+    public function getProductFavorite($params)
+    {
+        return $this->product_repo->getProductFavorite($params);
+    }
 }
