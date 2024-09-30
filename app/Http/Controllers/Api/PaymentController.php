@@ -7,7 +7,8 @@ use App\Http\Requests\Order\OrderRequest;
 use App\Services\OrderItemService;
 use App\Services\OrderService;
 use App\Services\VnPaymentService;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -19,24 +20,38 @@ class PaymentController extends Controller
 
     public function createPayment(OrderRequest $request)
     {
-        $params = $request->validated();
-        $create_order = $this->order_service->createOrder($params);
-        if (isset($create_order)) {
-            $this->order_item_service->createOrderItem($params, $create_order['id']);
+        try {
+            DB::beginTransaction();
+            $params = $request->validated();
+            $create_order = $this->order_service->createOrder($params);
+            if (isset($create_order)) {
+                $create_item = $this->order_item_service->createOrderItem($params, $create_order['id']);
+            }
+
+            if (!$create_item) {
+                DB::rollBack();
+                return $this->responseFail([], "Có lỗi xảy ra, vui lòng thử lại!");
+            }
+
+            DB::commit();
+
+            $orderInfo = "thanhtoansanpham";
+            $paymentUrl = $this->vn_payment_service->createPayment($params['total_amount'], $orderInfo, $create_order['transaction_id']);
+            return redirect($paymentUrl);
+        } catch (\Exception $e) {
+            return $this->responseFail([], $e->getMessage());
         }
-
-        $orderInfo = "Thanh toán sản phẩm!";
-        $paymentUrl = $this->vn_payment_service->createPayment($params['amount'], $orderInfo, $create_order['transaction_id']);
-
-        return redirect($paymentUrl);
     }
 
     public function callBack(Request $request)
     {
-        if ($this->vn_payment_service->validateResponse($request->all())) {
-            return response()->json(['status' => 'success', 'message' => 'Thanh toán thành công']);
+        $response = $this->vn_payment_service->validateResponse($request->all());
+        if ($response == '00') {
+            $request = $request->all();
+            $this->order_service->updateOrderByTransaction($request['vnp_TxnRef']);
+            return $this->responseSuccess([], "Thanh toán thành công");
         } else {
-            return response()->json(['status' => 'error', 'message' => 'Thanh toán thất bại']);
+            return $this->responseSuccess([], $response);
         }
     }
 }

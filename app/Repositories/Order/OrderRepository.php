@@ -11,4 +11,9 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     {
         $this->model = $model;
     }
+
+    public function updateOrderByTransaction($transaction_id)
+    {
+        return $this->model->where("transaction_id", "=", $transaction_id)->update(['payment_status' => 'completed']);
+    }
 }

@@ -2,4 +2,7 @@
 
 namespace App\Repositories\Order;
 
-interface OrderRepositoryInterface {}
+interface OrderRepositoryInterface
+{
+    public function updateOrderByTransaction($transaction_id);
+}

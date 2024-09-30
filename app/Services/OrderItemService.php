@@ -2,23 +2,26 @@
 
 namespace App\Services;
 
+use App\Models\OrderItem;
 use App\Repositories\OrderItem\OrderItemRepository;
+use App\Repositories\Product\ProductRepository;
 use Illuminate\Support\Facades\DB;
 
 class OrderItemService
 {
     public function __construct(
-        protected OrderItemRepository $order_item_repo
+        protected OrderItemRepository $order_item_repo,
+        protected ProductRepository $product_repo
     ) {}
 
     public function createOrderItem($params, $order_id)
     {
-        $data = [];
-        DB::beginTransaction();
         try {
-            foreach ($params as $item) {
-                $product = $this->order_item_repo->find($item['product_id']);
-                if ($product->quantity < $item['quantity']) {
+            $data = [];
+            foreach ($params['list_order_item'] as $item) {
+                $product = $this->product_repo->find($item['product_id']);
+
+                if ($product['quantity'] < $item['quantity']) {
                     throw new \Exception("Trong kho đã hết sản phẩm!");
                 }
 
@@ -28,16 +31,16 @@ class OrderItemService
                     'order_id' => $order_id,
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'created_at' => new \DateTime(),
+                    'updated_at' => new \DateTime()
                 ];
             }
 
-            $this->order_item_repo->insert($data);
+            OrderItem::insert($data);
 
-            return response()->json(['message' => 'Items created successfully'], 201);
+            return true;
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 422);
+            return false;
         }
     }
 }

@@ -24,4 +24,9 @@ class OrderService
 
         return $this->order_repo->create($param_orders);
     }
+
+    public function updateOrderByTransaction($transaction_id)
+    {
+        return $this->order_repo->updateOrderByTransaction($transaction_id);
+    }
 }

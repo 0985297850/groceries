@@ -94,3 +94,11 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
         });
     });
 });
+
+Route::group(['prefix' => 'v1'], function () {
+    Route::controller(PaymentController::class)->group(function () {
+        Route::prefix('payment')->group(function () {
+            Route::get('callback', 'callBack');
+        });
+    });
+});
