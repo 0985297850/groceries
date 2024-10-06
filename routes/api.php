@@ -82,6 +82,7 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
                 Route::post('create', 'create');
                 Route::post('update/{id}', 'update');
                 Route::get('delete/{id}', 'delete');
+                Route::post('cart', 'cart');
             });
         });
     });

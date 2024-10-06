@@ -17,10 +17,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     {
         $result = $this->model->select('*')->where('category_id', '=', $id);
 
-        $per_page = $params->per_page ?? 10;
+        $per_page = $params['per_page'] ?? 10;
 
-        if (isset($params->keyword)) {
-            $result = $result->where('name', 'like', '%' . $params->keyword . '%');
+
+        if (isset($params['keyword'])) {
+            $result = $result->where('name', 'like', '%' . $params['keyword'] . '%');
         }
 
         return $result->paginate($per_page);
@@ -30,10 +31,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     {
         $result = $this->model;
 
-        $per_page = $params->per_page ?? 10;
+        $per_page = $params['per_page'] ?? 10;
 
-        if (isset($params->keyword)) {
-            $result = $result->where('name', 'like', '%' . $params->keyword . '%');
+        if (isset($params['keyword'])) {
+            $result = $result->where('name', 'like', '%' . $params['keyword'] . '%');
         }
 
         return $result->paginate($per_page);
@@ -43,7 +44,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     public function getProductFavorite($params)
     {
         $user_id = Auth::id();
-        $per_page = $params->per_page ?? 10;
+        $per_page = $params['per_page'] ?? 10;
         $result = $this->model->select('*')
             ->join('product_favourites', 'products.id', '=', 'product_favourites.product_id')
             ->where('product_favourites.user_id', '=', $user_id);

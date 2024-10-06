@@ -19,7 +19,9 @@ class OrderService
         $param_orders = [
             'user_id' => $user_id,
             'total_amount' => $params['total_amount'],
-            'transaction_id' => $transaction_id
+            'transaction_id' => $transaction_id,
+            'phone' => $params['phone'],
+            'address' => $params['address']
         ];
 
         return $this->order_repo->create($param_orders);

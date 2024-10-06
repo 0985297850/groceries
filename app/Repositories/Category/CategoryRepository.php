@@ -14,12 +14,12 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
     public function getCategory($params)
     {
-        $per_page = $params->per_page ?? 10;
+        $per_page = $params['per_page'] ?? 10;
 
         $categories = $this->model;
 
-        if (isset($params->keyword)) {
-            $categories = $categories->where('name', 'like', '%' . $params->keyword . '%');
+        if (isset($params['keyword'])) {
+            $categories = $categories->where('name', 'like', '%' . $params['keyword'] . '%');
         }
 
         return $categories->paginate($per_page);
