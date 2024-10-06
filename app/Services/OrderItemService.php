@@ -20,6 +20,9 @@ class OrderItemService
             $data = [];
             foreach ($params['list_order_item'] as $item) {
                 $product = $this->product_repo->find($item['product_id']);
+                if (!$product) {
+                    return false;
+                }
 
                 if ($product['quantity'] < $item['quantity']) {
                     throw new \Exception("Trong kho đã hết sản phẩm!");
@@ -35,6 +38,7 @@ class OrderItemService
                     'updated_at' => new \DateTime()
                 ];
             }
+
 
             OrderItem::insert($data);
 

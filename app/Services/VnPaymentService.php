@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Strategy\Payments\PaymentGatewayInterface;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class VnPaymentService implements PaymentGatewayInterface
@@ -10,7 +11,7 @@ class VnPaymentService implements PaymentGatewayInterface
     public function createPayment($amount, $orderInfo, $transition_id)
     {
         $vnp_Url = config("vnpay.vnp_Url");
-        $vnp_Returnurl = config("vnpay.vnp_ReturnUrl");
+        $vnp_Returnurl = config("vnpay.vnp_ReturnUrl") . '?user_id=' . Auth::id();;
         $vnp_TmnCode = config("vnpay.vnp_TmnCode");
         $vnp_HashSecret = config("vnpay.vnp_HashSecret");
 

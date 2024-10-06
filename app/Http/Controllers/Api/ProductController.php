@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\Create;
 use App\Http\Requests\Product\Update;
 use App\Models\Product;
+use App\Services\CartService;
 use App\Services\CategoryService;
 use App\Services\ProductService;
 use App\Services\UploadFileService;
@@ -18,6 +19,7 @@ class ProductController extends Controller
         protected CategoryService $category_service,
         protected ProductService $product_service,
         protected UploadFileService $uploadfile_service,
+        protected CartService $cart_service
     ) {}
 
     public function index(Request $request)
@@ -168,5 +170,25 @@ class ProductController extends Controller
         ];
 
         return $this->responseSuccess($response, "Successfully!");
+    }
+
+    public function cart(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $params = $request->all();
+            $create_cart = $this->cart_service->createCart($params);
+
+            if (!$create_cart) {
+                DB::rollBack();
+                return $this->responseFail([], "Cập nhật giỏ hàng thất bại!");
+            }
+
+            DB::commit();
+            return $this->responseSuccess([], "Cập nhật giỏ hàng thành công!");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->responseFail([], $e->getMessage());
+        }
     }
 }
