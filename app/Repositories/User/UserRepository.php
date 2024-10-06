@@ -20,12 +20,12 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function getAllUser($params)
     {
-        $per_page = $params->per_page ?? 10;
+        $per_page = $params['per_page'] ?? 10;
 
         $users = $this->model;
 
-        if (isset($params->keyword)) {
-            $users = $users->where('name', 'like', '%' . $params->keyword . '%');
+        if (isset($params['keyword'])) {
+            $users = $users->where('name', 'like', '%' . $params['keyword'] . '%');
         }
 
         return $users->paginate($per_page);

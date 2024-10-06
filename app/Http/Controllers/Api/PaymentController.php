@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\OrderRequest;
+use App\Services\CartService;
 use App\Services\OrderItemService;
 use App\Services\OrderService;
 use App\Services\VnPaymentService;
@@ -16,6 +17,7 @@ class PaymentController extends Controller
         protected VnPaymentService $vn_payment_service,
         protected OrderService $order_service,
         protected OrderItemService $order_item_service,
+        protected CartService $cart_service
     ) {}
 
     public function createPayment(OrderRequest $request)
@@ -36,8 +38,7 @@ class PaymentController extends Controller
             DB::commit();
 
             $orderInfo = "thanhtoansanpham";
-            $paymentUrl = $this->vn_payment_service->createPayment($params['total_amount'], $orderInfo, $create_order['transaction_id']);
-            return redirect($paymentUrl);
+            $this->vn_payment_service->createPayment($params['total_amount'], $orderInfo, $create_order['transaction_id']);
         } catch (\Exception $e) {
             return $this->responseFail([], $e->getMessage());
         }
@@ -49,6 +50,7 @@ class PaymentController extends Controller
         if ($response == '00') {
             $request = $request->all();
             $this->order_service->updateOrderByTransaction($request['vnp_TxnRef']);
+            $this->cart_service->deleteCart($request['user_id']);
             return $this->responseSuccess([], "Thanh toán thành công");
         } else {
             return $this->responseSuccess([], $response);

@@ -27,6 +27,9 @@ class OrderRequest extends FormRequest
     {
         return [
             'total_amount' => 'required|numeric|min:0',
+            'address' => 'required|string|between:3,50',
+            'phone' => 'required|regex:/^0[0-9]{9,10}$/',
+            'address' => 'required|numeric|min:0',
             'list_order_item' => 'required|array|min:1',
             'list_order_item.*.product_id' => 'required|integer|exists:products,id',
             'list_order_item.*.quantity' => 'required|integer|min:1',
@@ -44,6 +47,11 @@ class OrderRequest extends FormRequest
             'list_order_item.*.product_id.exists' => 'ID sản phẩm không hợp lệ.',
             'list_order_item.*.quantity.required' => 'Số lượng là bắt buộc.',
             'list_order_item.*.quantity.min' => 'Số lượng phải lớn hơn hoặc bằng 1.',
+            'address.string' => 'Địa chỉ phải là chuỗi.',
+            'address.required' => 'Địa chỉ là bắt buộc.',
+            'address.between' => 'Địa chỉ từ phải là từ 3 đến 50 kí tự',
+            'phone.regex' => 'Số điện thoại không đúng định dạng.',
+            'phone.required' => 'Số điện thoại là bắt buộc.',
         ];
     }
 
