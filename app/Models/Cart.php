@@ -11,4 +11,9 @@ class Cart extends Model
 
     protected $table = "carts";
     protected $guarded = [];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 }

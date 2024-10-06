@@ -63,9 +63,7 @@ class VnPaymentService implements PaymentGatewayInterface
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
 
-        header('Location: ' . $vnp_Url);
-
-        die();
+        return $vnp_Url;
     }
 
     public function validateResponse($inputData)
