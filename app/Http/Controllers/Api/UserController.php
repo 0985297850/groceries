@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\Update;
 use App\Models\User;
+use App\Services\CartService;
 use App\Services\ProductService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -15,7 +16,8 @@ class UserController extends Controller
 {
     public function __construct(
         protected UserService $user_service,
-        protected ProductService $product_service
+        protected ProductService $product_service,
+        protected CartService $cart_service
     ) {}
 
 
@@ -156,5 +158,12 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return $this->responseFail([], "Có lỗi xảy ra: " . $e->getMessage());
         }
+    }
+
+    public function cart(Request $request)
+    {
+        $user_id = Auth::id();
+        $carts = $this->cart_service->getCartByUserId($user_id);
+        return $this->responseSuccess($carts, "Thành công!");
     }
 }

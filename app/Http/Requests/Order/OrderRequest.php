@@ -29,7 +29,6 @@ class OrderRequest extends FormRequest
             'total_amount' => 'required|numeric|min:0',
             'address' => 'required|string|between:3,50',
             'phone' => 'required|regex:/^0[0-9]{9,10}$/',
-            'address' => 'required|numeric|min:0',
             'list_order_item' => 'required|array|min:1',
             'list_order_item.*.product_id' => 'required|integer|exists:products,id',
             'list_order_item.*.quantity' => 'required|integer|min:1',
