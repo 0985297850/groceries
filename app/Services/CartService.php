@@ -42,4 +42,9 @@ class CartService
     {
         return $this->cart_repo->removeCartByUserId($user_id);
     }
+
+    public function getCartByUserId($user_id)
+    {
+        return $this->cart_repo->getCartByUserId($user_id);
+    }
 }

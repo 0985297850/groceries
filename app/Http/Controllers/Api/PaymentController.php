@@ -38,7 +38,8 @@ class PaymentController extends Controller
             DB::commit();
 
             $orderInfo = "thanhtoansanpham";
-            $this->vn_payment_service->createPayment($params['total_amount'], $orderInfo, $create_order['transaction_id']);
+            $create_url['url'] = $this->vn_payment_service->createPayment($params['total_amount'], $orderInfo, $create_order['transaction_id']);
+            return $this->responseSuccess($create_url, "Thành Công!");
         } catch (\Exception $e) {
             return $this->responseFail([], $e->getMessage());
         }
