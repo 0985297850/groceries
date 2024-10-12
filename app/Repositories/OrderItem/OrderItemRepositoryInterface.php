@@ -2,4 +2,7 @@
 
 namespace App\Repositories\OrderItem;
 
-interface OrderItemRepositoryInterface {}
+interface OrderItemRepositoryInterface
+{
+    public function getTopProduct($month_now, $year_now);
+}

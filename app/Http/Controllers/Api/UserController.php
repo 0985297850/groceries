@@ -166,4 +166,20 @@ class UserController extends Controller
         $carts = $this->cart_service->getCartByUserId($user_id);
         return $this->responseSuccess($carts, "Thành công!");
     }
+
+    public function orderHistory(Request $request)
+    {
+        $params = $request->all();
+        $user_id = Auth::id();
+        $history = $this->user_service->getHistoryByUser($user_id, $params);
+        $response = [
+            'data' => $history->items(),
+            'current_page' => $history->currentPage(),
+            'total_pages' => $history->lastPage(),
+            'per_page' => $history->perPage(),
+            'total_items' => $history->total(),
+        ];
+
+        return $this->responseSuccess($response, "Thành công!");
+    }
 }
