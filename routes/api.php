@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\UserController;
@@ -38,6 +39,8 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
             });
             Route::post('favourite/{id}', 'favourite');
             Route::get('cart', 'cart');
+
+            Route::get("order-history", 'orderHistory');
         });
     });
 });
@@ -101,6 +104,17 @@ Route::group(['prefix' => 'v1'], function () {
     Route::controller(PaymentController::class)->group(function () {
         Route::prefix('payment')->group(function () {
             Route::get('callback', 'callBack');
+        });
+    });
+});
+
+
+Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
+    Route::controller(DashboardController::class)->group(function () {
+        Route::prefix('dashboard')->group(function () {
+            Route::group(['middleware' => 'admin'], function () {
+                Route::get('top-product', 'topProductByMonth');
+            });
         });
     });
 });
