@@ -47,4 +47,9 @@ class OrderItemService
             return false;
         }
     }
+
+    public function getTopProduct($month_now, $year_now)
+    {
+        return $this->order_item_repo->getTopProduct($month_now, $year_now);
+    }
 }
