@@ -41,4 +41,9 @@ class UserService
     {
         return $this->order_repo->getHistoryByUser($user_id, $params);
     }
+
+    public function getHistory($params)
+    {
+        return $this->order_repo->getHistory($params);
+    }
 }

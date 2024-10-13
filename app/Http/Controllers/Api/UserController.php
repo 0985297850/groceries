@@ -185,6 +185,21 @@ class UserController extends Controller
         return $this->responseSuccess($response, "Thành công!");
     }
 
+    public function orderHistoryCms(Request $request)
+    {
+        $params = $request->all();
+        $history = $this->user_service->getHistory($params);
+        $response = [
+            'data' => $history->items(),
+            'current_page' => $history->currentPage(),
+            'total_pages' => $history->lastPage(),
+            'per_page' => $history->perPage(),
+            'total_items' => $history->total(),
+        ];
+
+        return $this->responseSuccess($response, "Thành công!");
+    }
+
     public function updateOrderStatus(Request $request)
     {
         $status = $request->status;

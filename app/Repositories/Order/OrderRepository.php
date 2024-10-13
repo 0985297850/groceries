@@ -26,6 +26,15 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         return $result->paginate($per_page);
     }
 
+    public function getHistory($params)
+    {
+        $per_page = $params['per_page'] ?? 10;
+
+        $result = $this->model->with('orderItems.product');
+
+        return $result->paginate($per_page);
+    }
+
     public function updateOrderStatus($status, $id)
     {
         return $this->model->where("id", "=", $id)->update(['order_status' => $status]);
