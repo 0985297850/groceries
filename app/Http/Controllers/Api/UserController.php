@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\Update;
 use App\Models\User;
 use App\Services\CartService;
+use App\Services\OrderService;
 use App\Services\ProductService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -17,7 +18,8 @@ class UserController extends Controller
     public function __construct(
         protected UserService $user_service,
         protected ProductService $product_service,
-        protected CartService $cart_service
+        protected CartService $cart_service,
+        protected OrderService $order_service
     ) {}
 
 
@@ -181,5 +183,15 @@ class UserController extends Controller
         ];
 
         return $this->responseSuccess($response, "Thành công!");
+    }
+
+    public function updateOrderStatus(Request $request)
+    {
+        $status = $request->status;
+        $order_id = $request->order_id;
+        if (!$status || !$order_id) return $this->responseFail([], "Có lỗi xảy ra vui lòng thử lại!");
+
+        $this->order_service->updateOrderStatus($status, $order_id);
+        return $this->responseSuccess([], "Cập nhật Order Status thành công!");
     }
 }
