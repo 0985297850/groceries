@@ -39,8 +39,8 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'v1'], function () {
             });
             Route::post('favourite/{id}', 'favourite');
             Route::get('cart', 'cart');
-
             Route::get("order-history", 'orderHistory');
+            Route::post("update-order-status", 'updateOrderStatus');
         });
     });
 });

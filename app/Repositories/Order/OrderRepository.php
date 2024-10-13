@@ -25,4 +25,9 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         return $result->paginate($per_page);
     }
+
+    public function updateOrderStatus($status, $id)
+    {
+        return $this->model->where("id", "=", $id)->update(['order_status' => $status]);
+    }
 }

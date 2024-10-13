@@ -31,4 +31,9 @@ class OrderService
     {
         return $this->order_repo->updateOrderByTransaction($transaction_id);
     }
+
+    public function updateOrderStatus($status, $id)
+    {
+        return $this->order_repo->updateOrderStatus($status, $id);
+    }
 }

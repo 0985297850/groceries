@@ -7,4 +7,6 @@ interface OrderRepositoryInterface
     public function updateOrderByTransaction($transaction_id);
 
     public function getHistoryByUser($user_id, $params);
+
+    public function updateOrderStatus($status, $id);
 }
